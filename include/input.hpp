@@ -5,4 +5,4 @@
 using namespace std;
 
 vector<string> getCommand(string promptMsg);
-vector<string> updateTerminal(string resultMsg);
+vector<string> updateTerminal(string result, string status);

@@ -22,7 +22,7 @@ class Gatherer{
 
         pthread_t m_thread;
         const GathererType& m_type;
-        const ResourceStack& m_resourceStack;
+        ResourceStack& m_resourceStack;
 
         float m_gatheringEffect = 1;
         float m_gatheringSpeed = 1;

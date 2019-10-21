@@ -5,9 +5,6 @@
 #include "input.hpp"
 
 
-static string errorMsg;
-
-
 /** Prints prompt message and reads the input of the user
  *  It returns the number of arguments (including command)
  *  given by the user
@@ -33,19 +30,16 @@ vector<string> getCommand( string promptMsg ){
     return args;
 }
 
-
-void displayStatus(){
-    cout<<"What is your command?"<<endl;
-}
-
-
-vector<string> updateTerminal(string resultMsg){
+vector<string> updateTerminal(string resultMsg, string statusMsg){
     
-    system("clear");
+    system("clear");    
     if( !resultMsg.empty() ){
-        cout<<resultMsg<<endl;
+        cout<<resultMsg<<endl<<endl;
     }
-    displayStatus();
+    
+    cout<<statusMsg<<endl<<endl;
+
+    cout<<"What is your command?"<<endl;
     return getCommand(">");
 }
 

@@ -3,10 +3,6 @@
 #include <unistd.h>
 #include <iostream>
 
-
-
-
-
 Gatherer::Gatherer(const GathererType& type, ResourceStack& resourceStack) : m_type(type),  m_resourceStack(resourceStack){
     pthread_create(&m_thread, NULL, threadCallback, this );
 }
@@ -22,7 +18,7 @@ void* Gatherer::threadCallback( void* gathererPtr ){
 
 void Gatherer::gatheringLoop(){
     while(true){
-        sleep(m_gatheringSpeed);
-        std::cout<<"Gathering"<<std::endl;
+        sleep(m_type.gatheringFreq * m_gatheringSpeed);
+        m_resourceStack.addResources(m_type.gatheringAmount * m_gatheringEffect);
     }
 }

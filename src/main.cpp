@@ -4,6 +4,7 @@
 #include <pthread.h>
 #include <unistd.h>
 #include <time.h>
+#include <sstream>
 
 #include "input.hpp"
 #include "gatherer.hpp"
@@ -18,21 +19,32 @@ ResourceStack resourceStack;
 vector<Gatherer*> gatherers;
 
 
+
+string createStatusMsg(){
+    ostringstream ss;
+    ss<<"Resources: "<<resourceStack.getResources()<<endl;
+    ss<<"Gatherers: "<<gatherers.size();
+    return ss.str();
+}
+
 int main(){
 
-    for(int i=0; i<2; i++){
-        gatherers.push_back( new Gatherer(TYPE_SIMPLE_BOT, resourceStack)  );
-    }
+    string result = ""; 
 
     while(true){
-        sleep(1);
-        // vector<string> args = updateTerminal("");
-        // if(args.size() > 0 ){
-        //     if(args[0] == "exit") break;
-        //     if(args[0] == "buy simplerobot"){
-                
-        //     }
-        // }
+        vector<string> args = updateTerminal(result, createStatusMsg());
+        result = ""; 
+        if(args.size() > 0 ){
+            if(args[0] == "exit") break;
+            if(args[0] == "buy"){
+                gatherers.push_back( new Gatherer(TYPE_SIMPLE_BOT, resourceStack)  );
+            }
+            if(args[0] == "res"){
+                std::ostringstream ss;
+                ss<<"You have "<<resourceStack.getResources()<<" resources";
+                result = ss.str();
+            }
+        }
     }
     return 0;
 }
