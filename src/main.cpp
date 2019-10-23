@@ -11,12 +11,20 @@
 #include "gatherer.hpp"
 #include "resource_stack.hpp"
 #include "texttable.h"
+#include "mysleep.hpp"
 
 
 using namespace std;
 
 bool run = true;
+bool hasWon = false;
 bool storeOpen = false;
+
+pthread_mutex_t checkWinLock = PTHREAD_MUTEX_INITIALIZER; 
+
+
+const float RESOURCE_GOAL = 10000;
+const time_t TIME = 360;
 
 ResourceStack resourceStack(50);
 
@@ -27,30 +35,57 @@ time_t remainingTime;
 
 
 
+void* checkForWin(void* args){
+    while( !hasWon ){
+        fsleep(0.1);
+        pthread_mutex_lock(&checkWinLock);
+        hasWon = resourceStack.getResources() >= RESOURCE_GOAL;
+        pthread_mutex_unlock(&checkWinLock);
+    }
 
-void endGame(){
-    cout<<"Game over!"<<endl;
-    exit(0); 
+    system("reset");
+    cout<<"You won!"<<endl;
+
+    string placeholder;
+    cin>>placeholder;
+
+    exit(0);
 }
 
-
-void* startCountdownCb(void* time){
-    remainingTime = (time_t) time;
+void* startCountdownCb(void* args){
+    remainingTime = TIME;
 
     while(remainingTime > 0 ){
-        struct timespec time1, time2;
-        time1.tv_sec = 1;
-        nanosleep( &time1, &time2 );
+        fsleep(1);
         remainingTime--;
     }
 
-    endGame();
+    if(!hasWon){
+        
+        system("reset");
+        cout<<"You lost!"<<endl;
+
+        string placeholder;
+        cin>>placeholder;
+    
+        exit(0); 
+    }
 }
 
-void startCountDown(time_t time){
-    pthread_t thread;
-    pthread_create(&thread, NULL, startCountdownCb, (void*) time);
+
+
+
+void startWinLossThreads(){
+    pthread_t t1;
+    pthread_create(&t1, NULL, startCountdownCb, NULL);
+
+    pthread_t t2;
+    pthread_create(&t2, NULL, checkForWin, NULL);
 }
+
+
+
+
 
 
 string createStatusMsg(){
@@ -158,7 +193,7 @@ string createStoreMsg(){
 
 int main(){
 
-    startCountDown(300);
+    startWinLossThreads();
     string result = ""; 
 
     while(true){

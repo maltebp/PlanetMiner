@@ -2,7 +2,7 @@
 #include <vector>
 #include <sstream>
 
-#include "input.hpp"
+#include "inputhandler.hpp"
 
 
 /** Prints prompt message and reads the input of the user
@@ -29,6 +29,8 @@ vector<string> getCommand( string promptMsg ){
     }
     return args;
 }
+
+
 
 vector<string> updateTerminal(string resultMsg, string statusMsg){
     
