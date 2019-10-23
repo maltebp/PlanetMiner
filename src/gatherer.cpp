@@ -29,6 +29,14 @@ float GathererType::adjustedGatheringAmount() const{
     return baseAmount + upgradeAmount;
 }
 
+
+int GathererType::calcUpgradeCost() const{
+    float baseCost = cost * UPGRADE_COST_FACTOR;
+    float levelCost = (1+ upgradeLevel * UPGRADE_COST_INC_FACTOR);
+    return baseCost * levelCost;
+}
+
+
 Gatherer::Gatherer(const GathererType& type, ResourceStack& resourceStack) : m_type(type),  m_resourceStack(resourceStack){
     pthread_create(&m_thread, NULL, threadCallback, this );
 }

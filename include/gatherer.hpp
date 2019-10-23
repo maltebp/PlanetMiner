@@ -7,9 +7,9 @@
 #include "resource_stack.hpp"
 
 
-const float UPGRADE_EFFECT_INC = 0.1;
-const float UPGRADE_COST_FACTOR = 4;
-const float UPGRADE_COST_INC_FACTOR = 2;
+const float UPGRADE_EFFECT_INC = 0.2;
+const float UPGRADE_COST_FACTOR = 1;
+const float UPGRADE_COST_INC_FACTOR = 1.5;
 
 class GathererType{
 
@@ -28,8 +28,11 @@ class GathererType{
         GathererType(std::string name, std::string commandKey, unsigned int cost, float gatheringAmount, float gatheringFreq);
         void upgrade();
         float adjustedGatheringAmount() const;
+        int calcUpgradeCost() const;
 };
 
+///=(($C$15/$D$15)*(1+$B$10*(B$18)))/$B$15
+// -((($C$14*($B$10*(C$17)))/$D$14)*($A18))/($B$14*$B$11*(1+$B$10*(B$17-1)))
 
 
 class Gatherer{
@@ -59,7 +62,7 @@ class Gatherer{
 const GathererType TYPE_SIMPLE_BOT(
     "Simple Bot",
     "sb",
-    20,
+    50,
     1,
     1
 );
@@ -68,23 +71,31 @@ const GathererType TYPE_SIMPLE_BOT(
 const GathererType TYPE_ADVANCED_BOT(
     "Advanced Bot",
     "ab",
-    100,
-    2,
+    1250,
+    14,
     0.5
 );
 
 const GathererType TYPE_TURBO_MINER(
     "Turbo Miner 1000",
     "tm",
-    500,
-    2,
+    5000,
+    13,
     0.1
 );
 
 const GathererType TYPE_BOMB_MINER(
     "Bomb Miner",
     "bm",
-    2000,
-    200,
+    25000,
+    3000,
     4
+);
+
+const GathererType TYPE_DYNA_MINER(
+    "Dyna-Miner",
+    "dm",
+    125000,
+    425,
+    0.1
 );

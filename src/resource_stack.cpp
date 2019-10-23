@@ -2,15 +2,15 @@
 
 
 
-ResourceStack::ResourceStack(float startingResources){
+ResourceStack::ResourceStack(long double startingResources){
     m_resources = startingResources;
 }
 
-void ResourceStack::addResources(float amount){
+void ResourceStack::addResources(long double amount){
     m_resources += amount;    
 }
 
-bool ResourceStack::removeResources(float amount){
+bool ResourceStack::removeResources(long double amount){
     if(m_resources >= amount){
         m_resources -= amount;
         return true;
@@ -22,6 +22,6 @@ void ResourceStack::clearResources(){
     m_resources = 0;
 }
 
-float ResourceStack::getResources(){
+long double ResourceStack::getResources(){
     return m_resources;
 }

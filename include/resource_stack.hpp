@@ -3,12 +3,12 @@
 class ResourceStack{
     
     private:
-        float m_resources = 0;
+        long double m_resources = 0;
 
     public:
-        ResourceStack(float startingResources);
-        void addResources(float amount); 
-        bool removeResources(float amount);    
+        ResourceStack(long double startingResources);
+        void addResources(long double amount); 
+        bool removeResources(long double amount);    
         void clearResources();
-        float getResources();
+        long double getResources();
 };

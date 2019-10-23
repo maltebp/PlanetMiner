@@ -16,6 +16,7 @@
 using namespace std;
 
 bool run = true;
+bool storeOpen = false;
 
 ResourceStack resourceStack(50);
 
@@ -115,10 +116,8 @@ string upgradeGatherers(vector<string> args){
 
     for( GathererType* type : GathererType::allTypes ){
         if(args[1] == type->commandKey){
-            float baseCost = type->cost * UPGRADE_COST_FACTOR;
-            float totalCost = baseCost + baseCost * type->upgradeLevel * UPGRADE_COST_INC_FACTOR;
             
-           if(resourceStack.removeResources( totalCost )){
+           if(resourceStack.removeResources( type->calcUpgradeCost() )){
                 type->upgradeLevel++;
                 return SUCC_UPGRADE;
             }
@@ -130,7 +129,14 @@ string upgradeGatherers(vector<string> args){
 
 
 string store(vector<string> args){
-    
+    if(args.size() > 1){
+        return ERR_WRONG_ARGS; 
+    }
+    storeOpen = true;
+    return "";
+}
+
+string createStoreMsg(){
     TextTable table('-', ' ', '-');
     table.add("Name ");
     table.add("Cmd Key  ");
@@ -151,7 +157,7 @@ string store(vector<string> args){
         table.add(conversionStream.str());
     
         table.add(to_string(type->upgradeLevel));
-        table.add(to_string(1000));
+        table.add(to_string(type->calcUpgradeCost()));
         table.endOfRow();
     }
     
@@ -163,7 +169,7 @@ string store(vector<string> args){
 
 int main(){
 
-    startCountDown(60);
+    startCountDown(300);
     string result = ""; 
 
     while(true){
@@ -190,6 +196,10 @@ int main(){
                 result = store(args);
             }else{
                 result = ERR_UNKNOWN_COMMAND;
+            }
+
+            if( storeOpen ) {
+                result += "\n\n" + createStoreMsg();
             }
         }
     }
