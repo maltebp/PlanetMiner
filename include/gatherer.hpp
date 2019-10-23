@@ -8,7 +8,7 @@
 
 
 const float UPGRADE_EFFECT_INC = 0.1;
-const float UPGRADE_COST_FACTOR = 10;
+const float UPGRADE_COST_FACTOR = 4;
 const float UPGRADE_COST_INC_FACTOR = 2;
 
 class GathererType{
@@ -22,11 +22,12 @@ class GathererType{
         std::string commandKey;
         unsigned int cost;
         float gatheringAmount;
-        unsigned int gatheringFreq;
+        float gatheringFreq;
         unsigned int upgradeLevel = 0;
         
-        GathererType(std::string name, std::string commandKey, unsigned int cost, float gatheringAmount, unsigned int gatheringFreq);
+        GathererType(std::string name, std::string commandKey, unsigned int cost, float gatheringAmount, float gatheringFreq);
         void upgrade();
+        float adjustedGatheringAmount() const;
 };
 
 
@@ -58,7 +59,32 @@ class Gatherer{
 const GathererType TYPE_SIMPLE_BOT(
     "Simple Bot",
     "sb",
-    15,
-    5,
-    3
+    20,
+    1,
+    1
+);
+
+
+const GathererType TYPE_ADVANCED_BOT(
+    "Advanced Bot",
+    "ab",
+    100,
+    2,
+    0.5
+);
+
+const GathererType TYPE_TURBO_MINER(
+    "Turbo Miner 1000",
+    "tm",
+    500,
+    2,
+    0.1
+);
+
+const GathererType TYPE_BOMB_MINER(
+    "Bomb Miner",
+    "bm",
+    2000,
+    200,
+    4
 );

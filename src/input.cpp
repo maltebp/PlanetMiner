@@ -34,7 +34,7 @@ vector<string> updateTerminal(string resultMsg, string statusMsg){
     
     system("clear");    
     if( !resultMsg.empty() ){
-        cout<<resultMsg<<endl<<endl;
+        cout<<endl<<resultMsg<<endl<<endl;
     }
     
     cout<<statusMsg<<endl<<endl;

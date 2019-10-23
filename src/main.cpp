@@ -10,13 +10,14 @@
 #include "input.hpp"
 #include "gatherer.hpp"
 #include "resource_stack.hpp"
+#include "texttable.h"
 
 
 using namespace std;
 
 bool run = true;
 
-ResourceStack resourceStack(20);
+ResourceStack resourceStack(50);
 
 vector<Gatherer*> gatherers;
 
@@ -54,18 +55,18 @@ void startCountDown(time_t time){
 string createStatusMsg(){
     ostringstream ss;
     ss<<"Time remaining: "<<remainingTime<<" seconds"<<endl<<endl;
-    ss<<"Resources: "<<resourceStack.getResources()<<endl;
+    ss<<"Resources: "<<fixed<<setprecision(2)<<resourceStack.getResources()<<" rs"<<endl;
     ss<<"Gatherers: "<<gatherers.size();
     return ss.str();
 }
 
 
 string createErrorMessage(string msg){
-    return "Error: " + msg; 
+    return "\033[31mError: " + msg+"\033[39m"; 
 }
 
 string createSuccessMessage(string msg){
-    return "Success: " + msg; 
+    return "\033[32mSuccess: " + msg+"\033[39m"; 
 }
 
 const string ERR_WRONG_ARGS = createErrorMessage("Your arguments doesn't fit that command, sir");
@@ -128,6 +129,36 @@ string upgradeGatherers(vector<string> args){
 }
 
 
+string store(vector<string> args){
+    
+    TextTable table('-', ' ', '-');
+    table.add("Name ");
+    table.add("Cmd Key  ");
+    table.add("Cost  ");
+    table.add("Effect  ");
+    table.add("Upg. Level  ");
+    table.add("Upg. Cost  ");
+    table.endOfRow();
+
+    for( GathererType* type : GathererType::allTypes ){
+        table.add(type->name + "  ");
+        table.add("'" + type->commandKey + "'  ");
+        table.add(to_string(type->cost));
+
+        ostringstream conversionStream;
+        conversionStream<<fixed<<setprecision(2)<<type->adjustedGatheringAmount();
+        conversionStream<<" rs / "<<type->gatheringFreq<<" sec.  ";
+        table.add(conversionStream.str());
+    
+        table.add(to_string(type->upgradeLevel));
+        table.add(to_string(1000));
+        table.endOfRow();
+    }
+    
+    ostringstream msgStream;
+    msgStream<<table;
+    return "These are the robots that have we work with, sir: \n" + msgStream.str();
+}
 
 
 int main(){
@@ -137,8 +168,9 @@ int main(){
 
     while(true){
         vector<string> args = updateTerminal(result, createStatusMsg());
-        result = ""; 
+        
         if(args.size() > 0 ){
+            result = ""; 
             if(args[0] == "exit") break;
             if(args[0] == "money"){
                 if(args.size() == 2){
@@ -154,6 +186,8 @@ int main(){
                 result = buyGatherer(args);
             }else if(args[0] == "upgrade"){
                 result = upgradeGatherers(args);
+            }else if(args[0] == "store"){
+                result = store(args);
             }else{
                 result = ERR_UNKNOWN_COMMAND;
             }

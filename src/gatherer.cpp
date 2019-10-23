@@ -4,6 +4,8 @@
 #include <unistd.h>
 #include <iostream>
 
+#include "mysleep.hpp"
+
 std::vector<GathererType*> GathererType::allTypes;
 
 void GathererType::resetAllUpgrades(){
@@ -12,13 +14,19 @@ void GathererType::resetAllUpgrades(){
     }
 }
 
-GathererType::GathererType(std::string name, std::string commandKey, unsigned int cost, float gatheringAmount, unsigned int gatheringFreq){
+GathererType::GathererType(std::string name, std::string commandKey, unsigned int cost, float gatheringAmount, float  gatheringFreq){
     this->name = name; 
     this->commandKey = commandKey;
     this->cost = cost;
     this->gatheringAmount = gatheringAmount;
     this->gatheringFreq = gatheringFreq;
     allTypes.push_back(this); 
+}
+
+float GathererType::adjustedGatheringAmount() const{
+    float baseAmount = gatheringAmount;
+    float upgradeAmount = baseAmount * upgradeLevel * UPGRADE_EFFECT_INC;
+    return baseAmount + upgradeAmount;
 }
 
 Gatherer::Gatherer(const GathererType& type, ResourceStack& resourceStack) : m_type(type),  m_resourceStack(resourceStack){
@@ -36,9 +44,7 @@ void* Gatherer::threadCallback( void* gathererPtr ){
 
 void Gatherer::gatheringLoop(){
     while(true){
-        sleep(m_type.gatheringFreq * m_gatheringSpeed);
-        float baseAmount = m_type.gatheringAmount;
-        float upgradeAmount = baseAmount * m_type.upgradeLevel * UPGRADE_EFFECT_INC;
-        m_resourceStack.addResources( baseAmount + upgradeAmount);
+        fsleep(m_type.gatheringFreq * m_gatheringSpeed);
+        m_resourceStack.addResources(m_type.adjustedGatheringAmount());
     }
 }
