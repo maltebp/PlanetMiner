@@ -79,26 +79,15 @@ const string ERR_UNKNOWN_COMMAND = createErrorMessage("We don't understand that 
 
 string buyGatherer(vector<string> args){
     
-    if( args.size() < 2 || args.size() > 3){
+    if( args.size() != 2 ){
       return ERR_WRONG_ARGS;
-    }
-
-    int gatherersToBuy = 1; 
-
-    if( args.size() == 3 ){
-        try{
-            gatherersToBuy = stoi(args[2]);
-        }catch(invalid_argument e){
-            return ERR_WRONG_ARGS;
-        }
     }
 
     for( GathererType* type : GathererType::allTypes ){
         if(args[1] == type->commandKey){
-            if(resourceStack.removeResources(type->cost * gatherersToBuy)){
-                for(int i=0; i<gatherersToBuy; i++){
-                    gatherers.push_back(new Gatherer( *type, resourceStack ));
-                }
+            if(resourceStack.removeResources(type->cost)){
+              
+                gatherers.push_back(new Gatherer( *type, resourceStack ));
                 return SUCC_BOUGHT_GATH;
             }
             return ERR_CANT_AFFORD;
@@ -132,7 +121,7 @@ string store(vector<string> args){
     if(args.size() > 1){
         return ERR_WRONG_ARGS; 
     }
-    storeOpen = true;
+    storeOpen = !storeOpen;
     return "";
 }
 
@@ -190,7 +179,7 @@ int main(){
             }
             else if(args[0] == "buy"){
                 result = buyGatherer(args);
-            }else if(args[0] == "upgrade"){
+            }else if(args[0] == "up"){
                 result = upgradeGatherers(args);
             }else if(args[0] == "store"){
                 result = store(args);
