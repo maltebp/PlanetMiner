@@ -2,13 +2,20 @@
 
 
 
+ResourceStack::ResourceStack(float startingResources){
+    m_resources = startingResources;
+}
 
 void ResourceStack::addResources(float amount){
     m_resources += amount;    
 }
 
-void ResourceStack::removeResources(float amount){
-    m_resources -= amount;
+bool ResourceStack::removeResources(float amount){
+    if(m_resources >= amount){
+        m_resources -= amount;
+        return true;
+    }
+    return false;
 }
 
 void ResourceStack::clearResources(){

@@ -2,15 +2,33 @@
 
 #include <pthread.h>
 #include <string>
+#include <vector>
+
 #include "resource_stack.hpp"
 
 
-typedef struct{
-    std::string name;
-    unsigned int cost;
-    float gatheringAmount;
-    unsigned int gatheringFreq;
-} GathererType;
+const float UPGRADE_EFFECT_INC = 0.1;
+const float UPGRADE_COST_FACTOR = 10;
+const float UPGRADE_COST_INC_FACTOR = 2;
+
+class GathererType{
+
+    public:
+        static std::vector<GathererType*> allTypes;
+        static void resetAllUpgrades();
+
+    public:
+        std::string name;
+        std::string commandKey;
+        unsigned int cost;
+        float gatheringAmount;
+        unsigned int gatheringFreq;
+        unsigned int upgradeLevel = 0;
+        
+        GathererType(std::string name, std::string commandKey, unsigned int cost, float gatheringAmount, unsigned int gatheringFreq);
+        void upgrade();
+};
+
 
 
 class Gatherer{
@@ -37,9 +55,10 @@ class Gatherer{
 };
 
 
-const GathererType TYPE_SIMPLE_BOT = {
-    .name = "Simple Bot",
-    .cost = 100,
-    .gatheringAmount = 10,
-    .gatheringFreq = 5
-};
+const GathererType TYPE_SIMPLE_BOT(
+    "Simple Bot",
+    "sb",
+    15,
+    5,
+    3
+);
